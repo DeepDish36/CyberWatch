@@ -50,7 +50,23 @@ def opcao_analise_rapida():
         print(f" - {caminho}")
         print(f"Total de linhas lidas: {len(linhas)}\n")
 
-        print("A análise detalhada dos eventos será implementada no próximo passo.\n")
+        # Extrair eventos
+        eventos = parser_linux.extrair_eventos(linhas)
+
+        # Contar eventos por tipo
+        contagem = {}
+        for ev in eventos:
+            tipo = ev["tipo"]
+            contagem[tipo] = contagem.get(tipo, 0) + 1
+
+        print("=== Resumo da Análise Rápida ===")
+        if not eventos:
+            print("Nenhum evento relevante encontrado.")
+        else:
+            for tipo, qtd in contagem.items():
+                print(f"- {tipo}: {qtd} evento(s)")
+
+        print("\nAnálise Rápida concluída.\n")
         return
 
 def opcao_analise_completa():
