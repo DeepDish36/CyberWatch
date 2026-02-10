@@ -1,6 +1,6 @@
 # main.py
 
-from core.utils import get_os
+from core.utils import get_os, clean, pause
 from core import parser_linux, analyzer
 
 def mostrar_menu():
@@ -22,12 +22,16 @@ def opcao_analise_rapida():
         resultado, info = parser_linux.obter_linhas()
 
         if resultado == "PERMISSAO_NEGADA":
+            clean()
             print("\n[ERRO CRÍTICO] Permissões insuficientes para ler o log:")
             print(f" - {info}")
             print("\nExecute a CyberWatch com sudo.\n")
+            pause()
+            clean()
             return
 
         if resultado is None:
+            clean()
             print("\n[ERRO CRÍTICO] Não foi possível localizar os seguintes logs:")
             for caminho in info:
                 print(f" - {caminho}")
@@ -37,19 +41,21 @@ def opcao_analise_rapida():
             if escolha == "s":
                 continue
             else:
-                print("\nA regressar ao menu...\n")
+                clean()
                 return
 
+        # Sucesso
         linhas = resultado
         caminho = info
 
-        print("\n[OK] Log encontrado e carregado com sucesso:")
-        print(f" - {caminho}")
+        clean()
+        print("[OK] Log encontrado e carregado com sucesso:")
+        print(f"- {caminho}")
         print(f"Total de linhas lidas: {len(linhas)}\n")
 
         eventos = parser_linux.extrair_eventos(linhas)
 
-        print("=== Resumo da Análise Rápida ===")
+        print("Resumo da Análise Rápida")
         if not eventos:
             print("Nenhum evento relevante encontrado.")
         else:
@@ -61,7 +67,6 @@ def opcao_analise_rapida():
             for tipo, qtd in contagem.items():
                 print(f"- {tipo}: {qtd} evento(s)")
 
-        # Gerar alertas
         alertas = analyzer.gerar_alertas(eventos)
 
         print("\n=== Alertas ===")
@@ -71,9 +76,10 @@ def opcao_analise_rapida():
             for alerta in alertas:
                 print(alerta)
 
-        print("\nAnálise Rápida concluída.\n")
+        print("\nAnálise Rápida concluída.")
+        pause()
+        clean()
         return
-
 
 def opcao_analise_completa():
     print("\n[Análise Completa] ainda não implementada.\n")
